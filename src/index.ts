@@ -1,1 +1,1 @@
-export * from './portkey-provider';
+export * from "./portkey-provider";
