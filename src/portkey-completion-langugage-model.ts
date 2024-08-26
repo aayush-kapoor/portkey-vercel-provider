@@ -1,6 +1,7 @@
 import { LanguageModelV1, LanguageModelV1FinishReason, LanguageModelV1LogProbs, LanguageModelV1StreamPart } from "@ai-sdk/provider";
 import { getArgs, transformStream } from "./utils/portkey-completion-utils";
 import { PortkeyCompletionSettings, PortkeyProvider } from "./portkey-provider";
+import { defaultRequestOptions } from "./utils/common-utils";
 
 
 export class PortkeyCompletionLanguageModel implements LanguageModelV1 {
@@ -29,7 +30,7 @@ export class PortkeyCompletionLanguageModel implements LanguageModelV1 {
             model: this.modelId,
             ...this.settings,
             ...args,
-        })
+        }, defaultRequestOptions)
         
         const { prompt: rawPrompt, ...rawSettings } = args;
         const choice = response.choices[0];
@@ -57,7 +58,7 @@ export class PortkeyCompletionLanguageModel implements LanguageModelV1 {
             ...this.settings,
             stream: true,
             ...args,
-        });
+        }, defaultRequestOptions);
 
         return {
             stream: await transformStream(response),
