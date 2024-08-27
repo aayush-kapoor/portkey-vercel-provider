@@ -1,11 +1,11 @@
 {
-  "name": "@ai-sdk/portkey",
+  "name": "@portkey-ai/vercel-provider",
   "author": {
     "name": "Naren Gogineni",
     "email": "support@portkey.ai",
     "url": "https://portkey.ai"
   },
-  "version": "0.0.50",
+  "version": "1.0.0-rc-1",
   "license": "Apache-2.0",
   "sideEffects": false,
   "main": "./dist/index.js",
