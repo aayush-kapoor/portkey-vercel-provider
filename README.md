@@ -62,4 +62,4 @@ const { text } = await generateText({
 
 ## Documentation
 
-Please check out the **[Portkey provider documentation](https://sdk.vercel.ai/providers/community-providers/portkey)** for more information.
+Please check out the **[Portkey provider documentation](https://docs.portkey.ai/docs/integrations/libraries/vercel)** for more information.

@@ -60,13 +60,13 @@
   "publishConfig": {
     "access": "public"
   },
-  "homepage": "https://sdk.vercel.ai/docs",
+  "homepage": "https://docs.portkey.ai/docs/integrations/libraries/vercel",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vercel/ai.git"
+    "url": "git+https://github.com/Portkey-AI/vercel-provider.git"
   },
   "bugs": {
-    "url": "https://github.com/vercel/ai/issues"
+    "url": "https://github.com/Portkey-AI/vercel-provider/issues"
   },
   "keywords": [
     "ai",
