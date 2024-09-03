@@ -57,5 +57,3 @@ export function createPortkey(
   portkeyProvider.chatModel = createChatModel;
   return portkeyProvider;
 }
-
-export const portkey = createPortkey();
