@@ -50,7 +50,7 @@ export function getArgs(
       inputFormat,
     });
 
-  const stop = [...(stopSequences ?? []), ...(userStopSequences ?? [])];
+  const stop = [...(stopSequences ?? []), ...(userStopSequences ?? []), ...(settings?.stop ?? [])];
 
   const baseArgs = {
     max_tokens: maxTokens || settings?.max_tokens,
@@ -59,12 +59,10 @@ export function getArgs(
     frequency_penalty: frequencyPenalty || settings?.frequency_penalty,
     presence_penalty: presencePenalty || settings?.presence_penalty,
     seed,
-
-    // prompt:
     prompt: completionPrompt,
 
     // stop sequences:
-    stop: stop || settings?.stop,
+    stop: stop.length ? stop : undefined,
   };
 
   switch (type) {
