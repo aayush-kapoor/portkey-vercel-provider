@@ -6,7 +6,6 @@ import {
 } from "@ai-sdk/provider";
 import { getArgs, transformStream } from "./utils/portkey-completion-utils";
 import { PortkeyCompletionSettings, PortkeyProvider } from "./portkey-provider";
-import { defaultRequestOptions } from "./utils/common-utils";
 
 export class PortkeyCompletionLanguageModel implements LanguageModelV1 {
   readonly specificationVersion = "v1";
@@ -39,7 +38,6 @@ export class PortkeyCompletionLanguageModel implements LanguageModelV1 {
         ...this.settings,
         ...args,
       },
-      defaultRequestOptions,
     );
 
     const { prompt: rawPrompt, ...rawSettings } = args;
@@ -70,7 +68,6 @@ export class PortkeyCompletionLanguageModel implements LanguageModelV1 {
         stream: true,
         ...args,
       },
-      defaultRequestOptions,
     );
 
     return {

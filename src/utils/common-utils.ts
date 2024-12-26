@@ -17,9 +17,3 @@ export function mapOpenAIFinishReason(
       return "unknown";
   }
 }
-
-export const defaultRequestOptions = {
-  metadata: {
-    _source: "portkey-vercel-provider",
-  },
-};

@@ -8,10 +8,7 @@ import {
   transformStream,
 } from "./utils/portkey-chat-utils";
 import { generateId } from "@ai-sdk/provider-utils";
-import {
-  defaultRequestOptions,
-  mapOpenAIFinishReason,
-} from "./utils/common-utils";
+import { mapOpenAIFinishReason } from "./utils/common-utils";
 
 export class PortkeyChatLanguageModel implements LanguageModelV1 {
   readonly specificationVersion = "v1";
@@ -44,7 +41,6 @@ export class PortkeyChatLanguageModel implements LanguageModelV1 {
         ...this.settings,
         ...args,
       },
-      defaultRequestOptions,
     );
     const { messages: rawPrompt, ...rawSettings } = args;
     const choice = response.choices[0];
@@ -82,7 +78,6 @@ export class PortkeyChatLanguageModel implements LanguageModelV1 {
         ...args,
         stream: true,
       },
-      defaultRequestOptions,
     );
 
     return {
