@@ -40,26 +40,6 @@ const llmClient = createPortkey(
 console.log(response)
 ```
 
-## Provider Instance
-
-You can import the default provider instance `portkey` from `portkey-ai-provider`:
-
-```ts
-import { portkey } from 'portkey-ai-provider';
-```
-
-## Example
-
-```ts
-import { portkey } from 'portkey-ai-provider';
-import { generateText } from 'ai';
-
-const { text } = await generateText({
-  model: portkey('gpt-4-turbo'),
-  prompt: 'What is a portkey?',
-});
-```
-
 ## Documentation
 
 Please check out the **[Portkey provider documentation](https://docs.portkey.ai/docs/integrations/libraries/vercel)** for more information.
