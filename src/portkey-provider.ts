@@ -7,13 +7,9 @@ import {
   OpenAICompatibleCompletionSettings,
   OpenAICompatibleEmbeddingSettings,
 } from "@ai-sdk/openai-compatible";
-import {
-  FetchFunction,
-  loadApiKey,
-  withoutTrailingSlash,
-} from "@ai-sdk/provider-utils";
+import { FetchFunction } from "@ai-sdk/provider-utils";
 import { Portkey } from "portkey-ai";
-import { defaultHeadersBuilder } from "portkey-ai/dist/src/utils";
+import { defaultHeadersBuilder } from "./utils";
 import {
   LanguageModelV1,
   ProviderV1,
