@@ -15,8 +15,8 @@ import {
   ProviderV1,
   EmbeddingModelV1,
   ImageModelV1,
-  ImageModelV1CallOptions,
 } from "@ai-sdk/provider";
+import { PortkeyImageModel } from "./portkey-image-model";
 
 export type PortkeyClient = InstanceType<typeof Portkey>;
 
@@ -96,56 +96,16 @@ export function createPortkey(
       getCommonModelConfig("embedding")
     );
 
-  const createImageModel = (
-    modelId: string,
-    settings: { maxImagesPerCall: number } = { maxImagesPerCall: 1 }
-  ) => {
-    return {
-      ...getCommonModelConfig("image"),
-      specificationVersion: "v1",
-      modelId: modelId,
-      maxImagesPerCall: settings.maxImagesPerCall,
-      doGenerate: async (options: ImageModelV1CallOptions) => {
-        try {
-          const result = await portkeyProvider.images.generate({
-            model: modelId,
-            prompt: options.prompt,
-            n: options.n,
-            size: options.size,
-          });
-
-          return {
-            images: result.data.map((img) => img.url),
-            warnings: [],
-            response: {
-              timestamp: new Date(result.created),
-              modelId: modelId,
-              headers: undefined,
-            },
-          };
-        } catch (error) {
-          console.error("Error in image model", error);
-
-          let errorMessage = "Unknown error";
-          if (error.response) {
-            errorMessage = `Error ${error.response.status}: ${error.response.statusText}`;
-          } else if (error.message) {
-            errorMessage = error.message;
-          }
-
-          return {
-            images: [],
-            warnings: [errorMessage],
-            response: {
-              timestamp: new Date(),
-              modelId: modelId,
-              headers: undefined,
-            },
-          };
-        }
-      },
-    } as ImageModelV1;
-  };
+    const createImageModel = (
+      modelId: string,
+      settings: { maxImagesPerCall: number } = { maxImagesPerCall: 1 }
+    ) => {
+      return new PortkeyImageModel(portkeyProvider, modelId, {
+        maxImagesPerCall: settings.maxImagesPerCall,
+        provider: 'portkey.image',
+      });
+    };
+    
 
   portkeyProvider.completionModel = createCompletionModel;
   portkeyProvider.languageModel = createChatModel;
