@@ -4,6 +4,8 @@ import {
   ImageModelV1CallOptions,
   ImageModelV1CallWarning,
 } from '@ai-sdk/provider';
+import type { Image } from 'portkey-ai/dist/src/apis/images';
+import { decodeBase64ToUint8Array } from './utils';
 
 export class PortkeyImageModel implements ImageModelV1 {
   readonly specificationVersion: 'v1' = 'v1';
@@ -87,8 +89,19 @@ export class PortkeyImageModel implements ImageModelV1 {
         headers: options.headers,
       });
 
+      const stringImages: string[] = [];
+      const uint8ArrayImages: Uint8Array[] = [];
+
+      result.data.forEach((img: Image) => {
+        if (img.url) {
+          stringImages.push(img.url);
+        } else if (img.b64_json) {
+          uint8ArrayImages.push(decodeBase64ToUint8Array(img.b64_json));
+        }
+      });
+
       return {
-        images: result.data.map((img: any) => img.url),
+        images: stringImages.length > 0 ? stringImages : uint8ArrayImages,
         warnings,
         response: {
           timestamp: new Date(result.created || Date.now()),
