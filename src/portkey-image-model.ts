@@ -5,7 +5,7 @@ import {
   ImageModelV1CallWarning,
 } from '@ai-sdk/provider';
 import type { Image } from 'portkey-ai/dist/src/apis/images';
-import { decodeBase64ToUint8Array } from './utils';
+import { fetchImageAsBase64 } from './utils';
 
 export class PortkeyImageModel implements ImageModelV1 {
   readonly specificationVersion: 'v1' = 'v1';
@@ -38,14 +38,15 @@ export class PortkeyImageModel implements ImageModelV1 {
    * - Checks for unsupported settings (aspectRatio, seed) and returns warnings.
    * - Uses any provider-specific options specified under "portkey" in providerOptions.
    * - Handles errors gracefully.
+   * - Always returns base64 encoded strings, fetching URLs if necessary.
    *
    * @param options - Options for the image generation call.
-   * @returns An object containing the generated images, any warnings, and response metadata.
+   * @returns An object containing the generated images as base64 strings, any warnings, and response metadata.
    */
   async doGenerate(
     options: ImageModelV1CallOptions
   ): Promise<{
-    images: Array<string> | Array<Uint8Array>;
+    images: Array<string>;
     warnings: Array<ImageModelV1CallWarning>;
     response: {
       timestamp: Date;
@@ -89,19 +90,19 @@ export class PortkeyImageModel implements ImageModelV1 {
         headers: options.headers,
       });
 
-      const stringImages: string[] = [];
-      const uint8ArrayImages: Uint8Array[] = [];
-
-      result.data.forEach((img: Image) => {
+      const base64Images: Promise<string>[] = result.data.map(async (img: Image) => {
         if (img.url) {
-          stringImages.push(img.url);
+          return await fetchImageAsBase64(img.url);
         } else if (img.b64_json) {
-          uint8ArrayImages.push(decodeBase64ToUint8Array(img.b64_json));
+          return img.b64_json;
         }
+        throw new Error('Image data contains neither URL nor base64 content');
       });
 
+      const images = await Promise.all(base64Images);
+
       return {
-        images: stringImages.length > 0 ? stringImages : uint8ArrayImages,
+        images,
         warnings,
         response: {
           timestamp: new Date(result.created || Date.now()),
