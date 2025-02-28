@@ -14,7 +14,9 @@ import {
   LanguageModelV1,
   ProviderV1,
   EmbeddingModelV1,
+  ImageModelV1,
 } from "@ai-sdk/provider";
+import { PortkeyImageModel } from "./portkey-image-model";
 
 export type PortkeyClient = InstanceType<typeof Portkey>;
 
@@ -23,18 +25,23 @@ export interface PortkeyProvider extends PortkeyClient, ProviderV1 {
 
   chatModel(
     modelId: string,
-    settings?: OpenAICompatibleChatSettings,
+    settings?: OpenAICompatibleChatSettings
   ): LanguageModelV1;
 
   completionModel(
     modelId: string,
-    settings?: OpenAICompatibleCompletionSettings,
+    settings?: OpenAICompatibleCompletionSettings
   ): LanguageModelV1;
 
   textEmbeddingModel(
     modelId: string,
-    settings?: OpenAICompatibleEmbeddingSettings,
+    settings?: OpenAICompatibleEmbeddingSettings
   ): EmbeddingModelV1<string>;
+
+  imageModel(
+    modelId: string,
+    settings?: { maxImagesPerCall: number }
+  ): ImageModelV1;
 }
 
 interface CommonModelConfig {
@@ -45,7 +52,7 @@ interface CommonModelConfig {
 }
 
 export function createPortkey(
-  options: ApiClientInterface = {},
+  options: ApiClientInterface = {}
 ): Omit<PortkeyProvider, "chat" | "completions"> {
   const portkeyProvider = new Portkey(options) as PortkeyProvider;
 
@@ -61,7 +68,7 @@ export function createPortkey(
 
   const createChatModel = (
     modelId: string,
-    settings: OpenAICompatibleChatSettings = {},
+    settings: OpenAICompatibleChatSettings = {}
   ) => {
     return new OpenAICompatibleChatLanguageModel(modelId, settings, {
       ...getCommonModelConfig("chat"),
@@ -71,27 +78,40 @@ export function createPortkey(
 
   const createCompletionModel = (
     modelId: string,
-    settings: OpenAICompatibleCompletionSettings = {},
+    settings: OpenAICompatibleCompletionSettings = {}
   ) =>
     new OpenAICompatibleCompletionLanguageModel(
       modelId,
       settings,
-      getCommonModelConfig("completion"),
+      getCommonModelConfig("completion")
     );
 
   const createTextEmbeddingModel = (
     modelId: string,
-    settings: OpenAICompatibleEmbeddingSettings = {},
+    settings: OpenAICompatibleEmbeddingSettings = {}
   ) =>
     new OpenAICompatibleEmbeddingModel(
       modelId,
       settings,
-      getCommonModelConfig("embedding"),
+      getCommonModelConfig("embedding")
     );
+
+    const createImageModel = (
+      modelId: string,
+      settings: { maxImagesPerCall: number } = { maxImagesPerCall: 1 }
+    ) => {
+      return new PortkeyImageModel(portkeyProvider, modelId, {
+        maxImagesPerCall: settings.maxImagesPerCall,
+        provider: 'portkey.image',
+      });
+    };
+    
 
   portkeyProvider.completionModel = createCompletionModel;
   portkeyProvider.languageModel = createChatModel;
   portkeyProvider.chatModel = createChatModel;
   portkeyProvider.textEmbeddingModel = createTextEmbeddingModel;
+  portkeyProvider.imageModel = createImageModel;
+  
   return portkeyProvider;
 }
