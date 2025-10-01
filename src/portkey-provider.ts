@@ -10,6 +10,8 @@ import {
 import { FetchFunction } from "@ai-sdk/provider-utils";
 import { Portkey } from "portkey-ai";
 import { defaultHeadersBuilder } from "./utils";
+import { withUserAgentSuffix } from "./utils";
+import { VERSION } from "./version";
 import {
   LanguageModelV1,
   ProviderV1,
@@ -56,7 +58,7 @@ export function createPortkey(
 ): Omit<PortkeyProvider, "chat" | "completions"> {
   const portkeyProvider = new Portkey(options) as PortkeyProvider;
 
-  const headers = defaultHeadersBuilder(portkeyProvider);
+  const headers = withUserAgentSuffix(defaultHeadersBuilder(portkeyProvider), `ai-sdk-provider/${VERSION}`);
   const getHeaders = () => headers;
 
   const getCommonModelConfig = (modelType: string): CommonModelConfig => ({

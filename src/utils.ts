@@ -55,3 +55,35 @@ export async function fetchImageAsBase64(url: string): Promise<string> {
         return btoa(binary);
     }
 }
+
+/**
+ * Removes entries from a record where the value is null or undefined.
+ * @param record - The input object whose entries may be null or undefined.
+ * @returns A new object containing only entries with non-null and non-undefined values.
+ */
+export function removeUndefinedEntries<T>(
+    record: Record<string, T | undefined>,
+  ): Record<string, T> {
+    return Object.fromEntries(
+      Object.entries(record).filter(([, value]) => value !== null),
+    ) as Record<string, T>
+  }
+
+export function withUserAgentSuffix(
+headers: HeadersInit | Record<string, string | undefined> | undefined,
+...userAgentSuffixParts: string[]
+): Record<string, string> {
+const cleanedHeaders = removeUndefinedEntries(
+    (headers as Record<string, string | undefined>) ?? {},
+)
+
+const currentUserAgentHeader = cleanedHeaders['user-agent'] || ''
+const newUserAgent = [currentUserAgentHeader, ...userAgentSuffixParts]
+    .filter(Boolean)
+    .join(' ')
+
+return {
+    ...cleanedHeaders,
+    'user-agent': newUserAgent,
+}
+}
